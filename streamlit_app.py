@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 from PyPDF2 import PdfReader
 from docx import Document
+from datetime import datetime
 
 def read_pdf(file):
     pdf_reader = PdfReader(file)
@@ -109,6 +110,20 @@ def main():
         st.session_state.api_key = None
     if 'review_mode' not in st.session_state:
         st.session_state.review_mode = False
+    if 'saved_quizzes' not in st.session_state:
+        st.session_state.saved_quizzes = {}
+    if 'viewing_saved_quiz' not in st.session_state:
+        st.session_state.viewing_saved_quiz = None
+
+    def save_current_quiz(quiz_name):
+        # 保存当前测验的所有信息
+        st.session_state.saved_quizzes[quiz_name] = {
+            'quiz_data': st.session_state.quiz_data,
+            'question_states': st.session_state.question_states,
+            'total_score': st.session_state.total_score,
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        return_to_start()
 
     def next_question():
         if st.session_state.current_question < len(st.session_state.quiz_data):
@@ -128,6 +143,18 @@ def main():
             if st.session_state.current_question in st.session_state.question_states:
                 st.session_state.show_next = True
 
+    def load_saved_quiz(quiz_name):
+        # 加载保存的测验
+        saved_quiz = st.session_state.saved_quizzes[quiz_name]
+        st.session_state.quiz_data = saved_quiz['quiz_data']
+        st.session_state.question_states = saved_quiz['question_states']
+        st.session_state.total_score = saved_quiz['total_score']
+        st.session_state.current_question = 1
+        st.session_state.quiz_started = True
+        st.session_state.review_mode = True
+        st.session_state.viewing_saved_quiz = quiz_name
+        st.session_state.show_final_score = False
+
     def return_to_start():
         st.session_state.quiz_started = False
         st.session_state.quiz_data = None
@@ -137,7 +164,8 @@ def main():
         st.session_state.show_next = False
         st.session_state.show_final_score = False
         st.session_state.review_mode = False
-        # 不清除API密钥
+        st.session_state.viewing_saved_quiz = None
+        # 不清除API密钥和已保存的测验
         # st.session_state.api_key = None
 
     def start_review():
@@ -148,6 +176,24 @@ def main():
     # Quiz generation page
     if not st.session_state.quiz_started:
         st.title("AI Quiz Generator")
+        
+        # 显示已保存的测验列表
+        if st.session_state.saved_quizzes:
+            st.write("📚 Saved Quizzes")
+            for quiz_name, quiz_data in st.session_state.saved_quizzes.items():
+                score = quiz_data['total_score']
+                percentage = (score['correct'] / score['total']) * 100
+                col1, col2, col3 = st.columns([3, 1, 1])
+                with col1:
+                    st.write(f"**{quiz_name}** ({quiz_data['timestamp']})")
+                with col2:
+                    st.write(f"Score: {percentage:.1f}%")
+                with col3:
+                    if st.button("View", key=f"view_{quiz_name}"):
+                        load_saved_quiz(quiz_name)
+                        st.experimental_rerun()
+            
+            st.write("---")  # 分隔线
         
         # API Key input section (只在未设置时显示)
         if not st.session_state.api_key:
@@ -253,6 +299,20 @@ def main():
             st.write("")
             st.write("")
             
+            # Save Quiz 选项
+            with st.expander("💾 Save This Quiz"):
+                quiz_name = st.text_input("Enter a name for this quiz:", 
+                    value=f"Quiz {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+                if st.button("Save Quiz", type="primary"):
+                    if quiz_name in st.session_state.saved_quizzes:
+                        st.error("A quiz with this name already exists. Please choose a different name.")
+                    else:
+                        save_current_quiz(quiz_name)
+                        st.success("Quiz saved successfully!")
+                        st.experimental_rerun()
+            
+            st.write("")  # 添加空间
+            
             # 选项按钮
             col1, col2 = st.columns(2)
             with col1:
@@ -332,23 +392,31 @@ def main():
                         st.experimental_rerun()
             
             with col2:
-                # 如果是最后一题且已回答，显示Finish按钮
-                if (st.session_state.current_question == len(st.session_state.quiz_data) and 
-                    current_q in st.session_state.question_states):
-                    if st.button("Finish Quiz", type="primary"):
-                        st.session_state.show_final_score = True
-                        st.experimental_rerun()
-                # 否则显示Next按钮（如果可以的话）
-                else:
-                    can_show_next = (
-                        st.session_state.review_mode or 
-                        (current_q in st.session_state.question_states and 
-                        st.session_state.current_question < len(st.session_state.quiz_data))
-                    )
-                    if can_show_next:
+                if st.session_state.viewing_saved_quiz:
+                    st.write(f"Viewing: {st.session_state.viewing_saved_quiz}")
+                    # 添加Next按钮，如果不是最后一题
+                    if st.session_state.current_question < len(st.session_state.quiz_data):
                         if st.button("Next Question"):
                             next_question()
                             st.experimental_rerun()
+                else:
+                    # 如果是最后一题且已回答，显示Finish按钮
+                    if (st.session_state.current_question == len(st.session_state.quiz_data) and 
+                        current_q in st.session_state.question_states):
+                        if st.button("Finish Quiz", type="primary"):
+                            st.session_state.show_final_score = True
+                            st.experimental_rerun()
+                    # 否则显示Next按钮（如果可以的话）
+                    else:
+                        can_show_next = (
+                            st.session_state.review_mode or 
+                            (current_q in st.session_state.question_states and 
+                            st.session_state.current_question < len(st.session_state.quiz_data))
+                        )
+                        if can_show_next:
+                            if st.button("Next Question"):
+                                next_question()
+                                st.experimental_rerun()
             
             with col3:
                 if st.button("Return to Start"):

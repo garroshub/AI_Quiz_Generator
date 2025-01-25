@@ -1,25 +1,23 @@
-# AI Quiz Generator
+# AI Quiz Generator 🎯
 
-An intelligent quiz generation application that creates custom quizzes from your documents using Google's Gemini AI.
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://quizai.streamlit.app/)
 
-![AI Quiz Generator Demo](demo.gif)
+An intelligent quiz generator powered by Google's Gemini AI that creates custom quizzes from your documents.
 
-## Features
+## ✨ Features
 
-- 📚 Support for multiple document formats (PDF, DOCX, TXT)
-- 🎯 Three difficulty levels (Easy, Medium, Hard)
-- 🔄 Interactive question-by-question navigation
-- ✅ Immediate feedback and explanations
-- 📊 Detailed score tracking and final results
-- 🎨 Clean and modern user interface
+- 📚 Generate quizzes from various document types (PDF, DOCX, TXT)
+- 🤖 AI-powered question generation using Google's Gemini AI
+- 📝 Multiple-choice questions with explanations
+- 🔄 Review mode to check your answers
+- 💾 Save and revisit your quiz attempts
+- 📊 Detailed score analysis and performance tracking
 
-## Getting Started
+## 🚀 Try It Now!
 
-### Prerequisites
-- Get your free Google Gemini API key from [Google AI Studio](https://ai.google.dev/gemini-api/docs/api-key)
-- Python 3.8 or higher
+Visit our live demo at [quizai.streamlit.app](https://quizai.streamlit.app/) to experience the AI Quiz Generator in action!
 
-### Installation
+## 🛠️ Local Setup
 
 1. Clone the repository:
 ```bash
@@ -27,68 +25,48 @@ git clone https://github.com/garroshub/AI_Quiz.git
 cd AI_Quiz
 ```
 
-2. Install the required packages:
+2. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Run the application:
+3. Get a Google Gemini API key from [Google AI Studio](https://ai.google.dev/gemini-api/docs/api-key)
+
+4. Run the app:
 ```bash
 streamlit run streamlit_app.py
 ```
 
-## How to Use
+## 💡 How to Use
 
-1. **Configure API**:
-   - Get your free API key from [Google AI Studio](https://ai.google.dev/gemini-api/docs/api-key)
-   - Enter your API key in the settings section of the app
+1. Enter your Google Gemini API key
+2. Upload your document (PDF, DOCX, or TXT)
+3. Wait for the AI to generate questions
+4. Answer the questions and get instant feedback
+5. Review your answers and save your quiz attempts
+6. Access your saved quizzes anytime
 
-2. **Upload Document**: 
-   - Click "Browse files" or drag and drop your document
-   - Supports PDF, DOCX, and TXT formats
-   - Maximum file size: 200MB
+## 🔑 API Key Security
 
-3. **Configure Quiz**:
-   - Set the number of questions (1-50)
-   - Choose difficulty level (Easy/Medium/Hard)
-   - Add optional instructions for specific focus areas
+- Get your API key from [Google AI Studio](https://ai.google.dev/gemini-api/docs/api-key)
+- Never commit your API key or expose it in your code
+- The app stores your API key securely in the session state
 
-4. **Take Quiz**:
-   - Answer questions one by one
-   - Get immediate feedback after each answer
-   - View explanations for correct answers
-   - Track your progress with the progress bar
+## 📝 License
 
-5. **Review Results**:
-   - See your final score and percentage
-   - Option to review all answers
-   - Start a new quiz at any time
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Difficulty Levels
+## 🤝 Contributing
 
-- **Easy**: Basic concepts and definitions
-- **Medium**: Applied knowledge and understanding
-- **Hard**: Complex scenarios and deep analysis
+Contributions are welcome! Feel free to open issues or submit pull requests.
 
-## Requirements
+## 👨‍💻 Author
 
-- Python 3.8+
-- Streamlit
-- Google Gemini AI API
-- PyPDF2 (for PDF files)
-- python-docx (for DOCX files)
+- [@garroshub](https://github.com/garroshub)
 
 ## Security Note
 
-⚠️ Never commit your API key or expose it. 
-
-## Contributing
-
-Feel free to open issues or submit pull requests for any improvements you'd like to suggest.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Never commit your API key or expose it. 
 
 ## Acknowledgments
 
