@@ -68,6 +68,10 @@ Contributions are welcome! Feel free to open issues or submit pull requests.
 
 Never commit your API key or expose it. 
 
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=garroshub/AI_Quiz_Generator&type=Date)](https://star-history.com/#garroshub/AI_Quiz_Generator&Date)
+
 ## Acknowledgments
 
 - Built with [Streamlit](https://streamlit.io/)
